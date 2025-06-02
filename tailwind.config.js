@@ -1,4 +1,5 @@
 import gluestackPlugin from "@gluestack-ui/nativewind-utils/tailwind-plugin";
+import { green } from "react-native-reanimated/lib/typescript/Colors";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -168,10 +169,28 @@ module.exports = {
           info: "rgb(var(--color-indicator-info)/<alpha-value>)",
           error: "rgb(var(--color-indicator-error)/<alpha-value>)",
         },
+        green: {
+          500: "var(--green-500)",
+          600: "var(--green-600)",
+          700: "var(--green-700)",
+        },
+        gray: {
+          100: "var(--gray-100)",
+          200: "var(--gray-200)",
+          300: "var(--gray-300)",
+          400: "var(--gray-400)",
+          500: "var(--gray-500)",
+          600: "var(--gray-600)",
+          700: "var(--gray-700)",
+          900: "var(--gray-900)",
+        },
+        red: {
+          500: "var(--red-500)",
+        }
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
+        heading: "Roboto_700Bold",
+        body: "Roboto_400Regular",
         mono: undefined,
         roboto: ["Roboto", "sans-serif"],
       },
@@ -179,7 +198,11 @@ module.exports = {
         extrablack: "950",
       },
       fontSize: {
-        "2xs": "10px",
+        "xs": "12px",
+        "sm": "14px",
+        "md": "16px",
+        "lg": "18px",
+        "xl": "20px",
       },
       boxShadow: {
         "hard-1": "-2px 2px 8px 0px rgba(38, 38, 38, 0.20)",
@@ -192,6 +215,10 @@ module.exports = {
         "soft-3": "0px 0px 30px rgba(38, 38, 38, 0.1)",
         "soft-4": "0px 0px 40px rgba(38, 38, 38, 0.1)",
       },
+      space: {
+        "14": 56,
+        "33": 148,
+      }
     },
   },
   plugins: [gluestackPlugin],

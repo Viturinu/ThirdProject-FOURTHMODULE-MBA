@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/components/useColorScheme";
 import { Slot } from "expo-router";
+import { Roboto_700Bold, Roboto_400Regular } from "@expo-google-fonts/roboto"
 
 import "../global.css";
 
@@ -27,22 +28,19 @@ export {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
-  });
+  const [fontsLoaded, error] = useFonts({ Roboto_700Bold, Roboto_400Regular });
 
-  const [styleLoaded, setStyleLoaded] = useState(false);
+  const [styleLoaded, setStyleLoaded] = useState(false); //carregamento dos estilos
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    if (error) throw error; //se existir o erro no retorno do useFonts, joga o erro pra frente
+  }, [error]); //assim que mudar o error, use effect dispara de novo
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) { //se loaded carregado, então esconde splashscreen
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded]); //assim que loaded mudar, dispara de novo o effect
 
   // useLayoutEffect(() => {
   //   setStyleLoaded(true);

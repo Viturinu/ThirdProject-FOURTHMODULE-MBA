@@ -153,6 +153,23 @@ export const config = {
     '--color-indicator-primary': '55 55 55',
     '--color-indicator-info': '83 153 236',
     '--color-indicator-error': '185 28 28',
+
+    // Custom colors pallete
+    '--green-500': "#00B37E",
+    '--green-600': "#16a34a",
+    '--green-700': "#00875f",
+
+    '--gray-100': "#e1e1e6",
+    '--gray-200': "#c4c4cc",
+    '--gray-300': "#7c7c8a",
+    '--gray-400': "#323238",
+    '--gray-500': "#29292e",
+    '--gray-600': "#202024",
+    '--gray-700': "#121214",
+    '--gray-900': "#121214",
+
+    '--red-500': "#f75a68",
+
   }),
   dark: vars({
     '--color-primary-0': '166 166 166',
@@ -305,5 +322,21 @@ export const config = {
     '--color-indicator-primary': '247 247 247',
     '--color-indicator-info': '161 199 245',
     '--color-indicator-error': '232 70 69',
+
+    // Custom colors pallete
+    '--green-500': "#00B37E",
+    '--green-600': "#16a34a",
+    '--green-700': "#00875f",
+
+    '--gray-100': "#e1e1e6",
+    '--gray-200': "#c4c4cc",
+    '--gray-300': "#7c7c8a",
+    '--gray-400': "#323238",
+    '--gray-500': "#29292e",
+    '--gray-600': "#202024",
+    '--gray-700': "#121214",
+    '--gray-900': "#121214",
+
+    '--red-500': "#f75a68",
   }),
 };
