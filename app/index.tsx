@@ -6,7 +6,7 @@ import Logo from "@assets/images/logo.svg"
 import { Center } from "@/components/ui/center";
 import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
-import { Input } from "@/components/Input";
+import { Input } from "@/components/mine/Input";
 
 export default function Home() {
   return (
