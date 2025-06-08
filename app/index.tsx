@@ -28,8 +28,8 @@ export default function Home() {
           <Heading className="text-gray-100">
             Acesse a conta
           </Heading>
-          <Input placeholder="Email" />
-          <Input placeholder="Senha" />
+          <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
+          <Input placeholder="Senha" secureTextEntry />
         </Center>
       </VStack>
     </VStack >

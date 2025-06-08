@@ -1,5 +1,5 @@
 'use client';
-import { vars } from 'nativewind';
+import { vars } from 'nativewind'; //vars que coloca esse objeto com os tokens dentro do estilo da aplicação, por meio do nativewind, que é uma especie de tailwind pra mobile
 
 export const config = {
   light: vars({
