@@ -5,7 +5,7 @@ type Props = ComponentProps<typeof InputField>;
 
 export function Input({ ...rest }: Props) {
     return (
-        <GluestackInput className="bg-gray-700 border-0 h-14 px-4 rounded-md focus:border-1 focus:text-green-500">
+        <GluestackInput className="bg-gray-700 border-2 border-gray-700 focus-within:border-green-500 h-14 px-4 rounded-md">
             <InputField className="font-body text-white placeholder:color-gray-300" {...rest} />
         </GluestackInput>
     )

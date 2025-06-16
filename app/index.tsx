@@ -24,13 +24,15 @@ export default function Home() {
             Treine sua mente e o seu corpo.
           </Text>
         </Center>
-        <Center className="gap-2">
+        <Center className="flex-col gap-4 w-full">
           <Heading className="text-gray-100">
             Acesse a conta
           </Heading>
+
           <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
-          <Input placeholder="Senha" secureTextEntry />
+          {/* <Input placeholder="Senha" secureTextEntry /> */}
         </Center>
+
       </VStack>
     </VStack >
   );
