@@ -54,6 +54,13 @@ const inputStyle = tva({
       rounded:
         'rounded-full border data-[invalid=true]:border-error-700 data-[invalid=true]:hover:border-error-700 data-[invalid=true]:data-[focus=true]:border-error-700 data-[invalid=true]:data-[focus=true]:hover:border-error-700 data-[invalid=true]:data-[disabled=true]:hover:border-error-700 data-[focus=true]:web:ring-1 data-[focus=true]:web:ring-inset data-[focus=true]:web:ring-indicator-primary data-[invalid=true]:web:ring-1 data-[invalid=true]:web:ring-inset data-[invalid=true]:web:ring-indicator-error data-[invalid=true]:data-[focus=true]:hover:web:ring-1 data-[invalid=true]:data-[focus=true]:hover:web:ring-inset data-[invalid=true]:data-[focus=true]:hover:web:ring-indicator-error data-[invalid=true]:data-[disabled=true]:hover:web:ring-1 data-[invalid=true]:data-[disabled=true]:hover:web:ring-inset data-[invalid=true]:data-[disabled=true]:hover:web:ring-indicator-error',
     },
+
+    focusColor: {
+      green: 'data-[focus=true]:border-green-500',
+      red: 'data-[focus=true]:border-red-500',
+      blue: 'data-[focus=true]:border-blue-500',
+      none: '', // fallback
+    },
   },
 });
 
@@ -104,12 +111,12 @@ const inputFieldStyle = tva({
 type IInputProps = React.ComponentProps<typeof UIInput> &
   VariantProps<typeof inputStyle> & { className?: string };
 const Input = React.forwardRef<React.ElementRef<typeof UIInput>, IInputProps>(
-  ({ className, variant = 'outline', size = 'md', ...props }, ref) => {
+  ({ className, variant = 'outline', size = 'md', focusColor = 'none', ...props }, ref) => {
     return (
       <UIInput
         ref={ref}
         {...props}
-        className={inputStyle({ variant, size, class: className })}
+        className={inputStyle({ variant, size, class: className, focusColor })}
         context={{ variant, size }}
       />
     );

@@ -30,7 +30,7 @@ export default function Home() {
           </Heading>
 
           <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
-          {/* <Input placeholder="Senha" secureTextEntry /> */}
+          <Input placeholder="Senha" secureTextEntry />
         </Center>
 
       </VStack>
