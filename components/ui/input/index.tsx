@@ -108,15 +108,16 @@ const inputFieldStyle = tva({
   },
 });
 
-type IInputProps = React.ComponentProps<typeof UIInput> &
+type IInputProps = React.ComponentProps<typeof UIInput> & //UIInput é o componente que foi criado com a função createInput({ Root: withStyleContext(View, SCOPE), Icon: UIIcon, Slot: Pressable, Input: TextInput,});
   VariantProps<typeof inputStyle> & { className?: string };
+
 const Input = React.forwardRef<React.ElementRef<typeof UIInput>, IInputProps>(
-  ({ className, variant = 'outline', size = 'md', focusColor = 'none', ...props }, ref) => {
+  ({ className, variant = 'outline', size = 'md', focusColor = 'none', ...props }, ref) => { //aqui ele cria a função com objeto (className, variant, size, focusColor e ...props) e ref
     return (
       <UIInput
         ref={ref}
         {...props}
-        className={inputStyle({ variant, size, class: className, focusColor })}
+        className={inputStyle({ variant, size, class: className, focusColor })} //aparentemente ele recebe uma string de uma função 'inputStyle'
         context={{ variant, size }}
       />
     );

@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from "react";
+import { ComponentProps } from "react";
 import { Input as GluestackInput, InputField } from "../ui/input"
 
 type Props = ComponentProps<typeof InputField>;

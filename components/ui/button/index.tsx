@@ -41,13 +41,15 @@ const buttonStyle = tva({
   variants: {
     action: {
       primary:
-        'bg-primary-500 data-[hover=true]:bg-primary-600 data-[active=true]:bg-primary-700 border-primary-300 data-[hover=true]:border-primary-400 data-[active=true]:border-primary-500 data-[focus-visible=true]:web:ring-indicator-info',
+        'bg-green-500 data-[hover=true]:bg-green-600 data-[active=true]:bg-green-700 border-green-300 data-[hover=true]:border-green-400 data-[active=true]:border-green-500 data-[focus-visible=true]:web:ring-indicator-info',
       secondary:
         'bg-secondary-500 border-secondary-300 data-[hover=true]:bg-secondary-600 data-[hover=true]:border-secondary-400 data-[active=true]:bg-secondary-700 data-[active=true]:border-secondary-700 data-[focus-visible=true]:web:ring-indicator-info',
       positive:
         'bg-success-500 border-success-300 data-[hover=true]:bg-success-600 data-[hover=true]:border-success-400 data-[active=true]:bg-success-700 data-[active=true]:border-success-500 data-[focus-visible=true]:web:ring-indicator-info',
       negative:
         'bg-error-500 border-error-300 data-[hover=true]:bg-error-600 data-[hover=true]:border-error-400 data-[active=true]:bg-error-700 data-[active=true]:border-error-500 data-[focus-visible=true]:web:ring-indicator-info',
+      pressed:
+        'bg-green-700 border-green-500 data-[hover=true]:bg-green-600 data-[hover=true]:border-green-400 data-[active=true]:bg-green-700 data-[active=true]:border-green-500 data-[focus-visible=true]:web:ring-indicator-info',
       default:
         'bg-transparent data-[hover=true]:bg-background-50 data-[active=true]:bg-transparent',
     },
@@ -67,6 +69,12 @@ const buttonStyle = tva({
     },
   },
   compoundVariants: [
+    {
+      action: 'pressed',
+      variant: 'link',
+      class:
+        'px-0 bg-green-500 data-[hover=true]:bg-green-500 data-[active=true]:bg-green-500',
+    },
     {
       action: 'primary',
       variant: 'link',
@@ -90,6 +98,12 @@ const buttonStyle = tva({
       variant: 'link',
       class:
         'px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'pressed',
+      variant: 'outline',
+      class:
+        'bg-green-200 data-[hover=true]:bg-green-200 data-[active=true]:bg-green-200',
     },
     {
       action: 'primary',
