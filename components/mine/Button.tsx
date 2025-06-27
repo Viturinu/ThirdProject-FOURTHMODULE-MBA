@@ -8,9 +8,9 @@ type Props = ComponentProps<typeof GluestackButton> & {
 
 export function Button({ title, isLoading = false, ...props }: Props) {
     return (
-        <GluestackButton disabled={isLoading} className="w-full h-14 rounded-sm" {...props}>
+        <GluestackButton disabled={isLoading} className="w-full h-14 rounded-md" {...props}>
             {
-                isLoading ? <ButtonSpinner className="text-gray-100" /> : <ButtonText className="color-white">{title}</ButtonText>
+                isLoading ? <ButtonSpinner className="text-gray-100" /> : <ButtonText>{title}</ButtonText>
             }
         </GluestackButton>
     )

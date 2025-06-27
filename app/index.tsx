@@ -8,41 +8,11 @@ import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
+import { ScrollView } from "react-native";
+import Home from "./(signed-out)/log-in";
 
-export default function Home() {
+export default function Index() {
   return (
-    <VStack className="flex-1 bg-gray-700">
-      <Image
-        source={BackgroundImg}
-        defaultSource={BackgroundImg}
-        className="absolute w-full h-[624px]"
-        alt="Imagem de fundo do Gym Ignite"
-      />
-      <VStack className="flex-1 px-10">
-        <Center className="my-24">
-          <Logo />
-          <Text className="text-gray-100 text-sm">
-            Treine sua mente e o seu corpo.
-          </Text>
-        </Center>
-        <Center className="flex-col gap-4 w-full">
-          <Heading className="text-gray-100">
-            Acesse a conta
-          </Heading>
-
-          <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
-          <Input placeholder="Senha" secureTextEntry />
-
-          <Button title="Acessar" action="primary" />
-
-        </Center>
-
-        <Center className="flex">
-          <Text>Ainda não tem acesso?</Text>
-          <Button title="Criar Conta" action="primary" />
-        </Center>
-
-      </VStack>
-    </VStack >
+    <Home />
   );
 }

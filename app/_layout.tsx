@@ -37,7 +37,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded) { //se loaded carregado, então esconde splashscreen
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync(); //caso fontsLoaded seja carregado, ele minimiza o Splashscreen no ato.
     }
   }, [fontsLoaded]); //assim que loaded mudar, dispara de novo o effect
 
@@ -49,7 +49,7 @@ export default function RootLayout() {
   //   return null;
   // }
 
-  return <RootLayoutNav />;
+  return <RootLayoutNav />; //criou a função ali embaixo, ao inves de criar a função padrão, com ( <View></View>)
 }
 
 function RootLayoutNav() {
