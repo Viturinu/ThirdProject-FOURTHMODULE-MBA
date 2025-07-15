@@ -9,13 +9,23 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
+import { router } from "expo-router";
 
-export default function Home() {
+export default function SignUp() {
+
+    function handleUserCreation() {
+        console.log("Usuário criado com sucesso.")
+    }
+
+    function handleGoBack() {
+        router.back();
+    }
+
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}>
-            <VStack className="flex-1 bg-gray-700">
+            <VStack className="flex-1 bg-gray-700 pb-3">
                 <Image
                     source={BackgroundImg}
                     defaultSource={BackgroundImg}
@@ -40,11 +50,11 @@ export default function Home() {
 
                         <Input placeholder="Senha" secureTextEntry />
 
-                        <Button title="Criar e acessar" action="primary" variant="solid" />
+                        <Button title="Criar e acessar" action="primary" variant="solid" onPress={handleUserCreation} />
 
                     </Center>
 
-                    <Button title="Voltar para o login" action="secondary" variant="outline" className="mt-12" />
+                    <Button title="Voltar para o login" action="secondary" variant="outline" className="mt-12" onPress={handleGoBack} />
 
                 </VStack>
             </VStack >

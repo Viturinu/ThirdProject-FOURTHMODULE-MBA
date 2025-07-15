@@ -12,6 +12,7 @@ import { Slot } from "expo-router";
 import { Roboto_700Bold, Roboto_400Regular } from "@expo-google-fonts/roboto"
 
 import "../global.css";
+import { StatusBar } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,6 +58,11 @@ function RootLayoutNav() {
 
   return (
     <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Slot />
       </ThemeProvider>
