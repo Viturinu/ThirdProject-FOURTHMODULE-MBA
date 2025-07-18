@@ -10,9 +10,9 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/components/useColorScheme";
 import { Slot } from "expo-router";
 import { Roboto_700Bold, Roboto_400Regular } from "@expo-google-fonts/roboto"
-
 import "../global.css";
-import { StatusBar } from "react-native";
+import { Box } from "@/components/ui/box";
+import { StatusBar } from "@/components/ui/status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -56,17 +56,22 @@ export default function RootLayout() {
 function RootLayoutNav() {
 
   const colorScheme = useColorScheme();
+  const theme = DefaultTheme;
+  theme.colors.background = '#121214';
 
   return (
-    <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
+    <Box className="flex-1 bg-black">
       <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
         translucent
+        backgroundColor="transparent"
+        barStyle="light-content" // ou "dark-content", conforme o fundo
       />
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Slot />
-      </ThemeProvider>
-    </GluestackUIProvider>
+      <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <Slot />
+        </ThemeProvider>
+      </GluestackUIProvider>
+
+    </Box>
   );
 }
