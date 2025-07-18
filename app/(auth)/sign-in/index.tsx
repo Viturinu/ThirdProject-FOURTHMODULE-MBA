@@ -9,19 +9,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
-<<<<<<< HEAD:app/(signed-out)/sign-in/index.tsx
-import { useNavigation } from "@react-navigation/native";
-import { useRouter } from "expo-router";
 
-export default function SignIn() {
-
-    const router = useRouter();
-
-    function handleNewAccount() {
-        router.push("/sign-up");
-    }
-
-=======
 import { useRouter } from "expo-router";
 
 export default function Home() {
@@ -32,7 +20,6 @@ export default function Home() {
         navigation.navigate("/sign-up")
     }
 
->>>>>>> 62bc7dc (add:finishing interfaces):app/(auth)/sign-in/index.tsx
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -65,13 +52,9 @@ export default function Home() {
 
                     <Center className="flex mt-16">
                         <Text className="color-gray-100 text-sm mb-3 font-body">Ainda não tem acesso?</Text>
-<<<<<<< HEAD:app/(signed-out)/sign-in/index.tsx
-                        <Button title="Criar Conta" action="secondary" variant="outline" onPress={handleNewAccount} />
-=======
-                        <Button title="Criar Conta" action="secondary" variant="outline" onPress={handleNavigateToSignUp} />
->>>>>>> 62bc7dc (add:finishing interfaces):app/(auth)/sign-in/index.tsx
-                    </Center>
 
+                        <Button title="Criar Conta" action="secondary" variant="outline" onPress={handleNavigateToSignUp} />
+                    </Center>
                 </VStack>
             </VStack >
         </ScrollView>
