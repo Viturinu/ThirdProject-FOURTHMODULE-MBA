@@ -1,5 +1,4 @@
 import { Tabs } from "expo-router";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import HomeSvg from "@assets/images/home.svg";
 import HistorySvg from "@assets/images/history.svg";
 import ProfileSvg from "@assets/images/profile.svg";
@@ -19,8 +18,8 @@ export default function AuthLayout() {
         }}>
             <Tabs.Screen name="home/index" options={{ title: "Home", tabBarIcon: ({ color }) => <HomeSvg fill={color} /> }} />
             <Tabs.Screen name="history/index" options={{ title: "History", tabBarIcon: ({ color }) => <HistorySvg fill={color} /> }} />
-            <Tabs.Screen name="exercise/index" options={{ title: "Exercise", tabBarIcon: ({ color }) => <ProfileSvg fill={color} /> }} />
-            <Tabs.Screen name="profile/index" options={{ href: null }} />
+            <Tabs.Screen name="profile/index" options={{ title: "Exercise", tabBarIcon: ({ color }) => <ProfileSvg fill={color} /> }} />
+            <Tabs.Screen name="exercise/index" options={{ href: null }} />
         </Tabs>
     );
 }

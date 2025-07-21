@@ -57,7 +57,7 @@ function RootLayoutNav() {
 
   const colorScheme = useColorScheme();
   const theme = DefaultTheme;
-  theme.colors.background = '#121214';
+  theme.colors.background = "#121214";
 
   return (
     <Box className="flex-1 bg-black">
