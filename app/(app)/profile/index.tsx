@@ -1,7 +1,9 @@
+import { Button } from "@/components/mine/Button";
 import { Input } from "@/components/mine/Input";
 import { ScreenHeader } from "@/components/mine/ScreenHeader";
 import { UserPhoto } from "@/components/mine/UserPhoto";
 import { Center } from "@/components/ui/center";
+import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { ScrollView, TouchableOpacity, View } from "react-native";
@@ -24,6 +26,17 @@ export default function Profile() {
 
                         <Input value="victor.almeida.ti@gmail.com" keyboardType="email-address" className="text-gray-200 bg-gray-600" isReadOnly />
                     </Center>
+
+                    <Heading className="self-start font-heading text-gray-200 text-md mt-12 mb-2">Alterar senha</Heading>
+
+                    <Center className=" w-full gap-4">
+                        <Input placeholder="Senha antiga" className="bg-gray-600" secureTextEntry />
+                        <Input placeholder="Nova antiga" className="bg-gray-600" secureTextEntry />
+                        <Input placeholder="Confirme a nova senha" className="bg-gray-600" secureTextEntry />
+
+                        <Button title="Atualizar" />
+                    </Center>
+
                 </Center>
             </ScrollView>
         </VStack>

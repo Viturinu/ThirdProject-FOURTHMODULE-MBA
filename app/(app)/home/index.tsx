@@ -7,12 +7,33 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useState } from "react";
 import { FlatList } from "react-native";
+import { useRouter } from "expo-router"; //antigamente era useNavigation do react-navigation/native
+
+export type RouteProps = {
+    name: string
+    muscleCategory: string
+    id: string
+}
 
 export default function Home() {
 
     const [exercises, setExercises] = useState(["Puxada frontal", "Puxada curvada", "Puxada unilateral", "Levantamento terra",]);
     const [groups, setGroups] = useState(["Costas", "Bíceps", "Tríceps", "Ombro"]);
     const [groupSelected, setGroupSelected] = useState("Costas");
+
+    const router = useRouter(); //antigamente seria o const navigation = useNavigation<AppNavigatorRoutesProps>(), assim ele já reconheceria as rotas que já estariam previamente tipadas
+
+    function handleOpenExerciseDetails() {
+        router.navigate({
+            pathname: "/(app)/exercise",
+            params: {
+                id: 5,
+                name: "Puxada frontal",
+                muscleCategory: "Costas"
+            }
+        })
+    }
+
 
     return (
         <VStack className="flex-1">
@@ -48,7 +69,7 @@ export default function Home() {
                     keyExtractor={item => item}
                     data={exercises}
                     renderItem={() => {
-                        return <ExerciseCard />
+                        return <ExerciseCard onPress={handleOpenExerciseDetails} />
                     }}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
