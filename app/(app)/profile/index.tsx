@@ -10,9 +10,13 @@ import { Alert, ScrollView, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
+import { ToastMessage } from "@/components/mine/ToastMessage";
+import { useToast } from "@/components/ui/toast";
 
 
 export default function Profile() {
+
+    const toast = useToast();
 
     const [userPhoto, setUserPhoto] = useState("https://github.com/viturinu.png");
 
@@ -36,8 +40,14 @@ export default function Profile() {
                     size: number
                 };
 
-                if (photoInfo.size && (photoInfo.size / 1024 / 1024 > 5)) { //verifica tamanho da imagem e retorna se exceder.
-                    return Alert.alert("Essa imagem é muito grande. Escolha uma até 5MB.")
+                if (photoInfo.size && (photoInfo.size / 1024 / 1024 > 0.1)) { //verifica tamanho da imagem e retorna se exceder.
+                    return toast.show({
+                        placement: "top",
+                        render: ({ id }) => (
+                            <ToastMessage id={id} action="error" title="Essa imagem é muito grande. Escolha uma de até 5MB." onClose={() => toast.close(id)} />
+                        )
+                    })
+                    // return Alert.alert("Essa imagem é muito grande. Escolha uma até 5MB.")
                 }
 
                 setUserPhoto(photoURI) //adiciona a uri criada da foto carregada no estado que está sendo usado para exibição na screen
@@ -74,7 +84,6 @@ export default function Profile() {
 
                         <Button title="Atualizar" />
                     </Center>
-
                 </Center>
             </ScrollView>
         </VStack>

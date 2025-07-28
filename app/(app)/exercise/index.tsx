@@ -9,7 +9,6 @@ import { RouteProps } from "../home";
 import { Heading } from "@/components/ui/heading";
 import { useEffect } from "react";
 import { Image } from "@/components/ui/image"
-import { Box } from "@/components/ui/box";
 import BodySvg from "@assets/images/body.svg";
 import SeriesSvg from "@assets/images/series.svg"
 import RepetitionSvg from "@assets/images/repetitions.svg"
