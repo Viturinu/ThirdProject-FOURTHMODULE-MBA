@@ -25,7 +25,7 @@ export {
 // };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync(); //aqui ele previne que o SplashScreen saia; no useEffect que controlaremos esse HideAsync
 
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({ Roboto_700Bold, Roboto_400Regular });

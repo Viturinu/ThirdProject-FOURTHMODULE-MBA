@@ -10,11 +10,32 @@ import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
 import { router } from "expo-router";
+import { useForm, Controller } from "react-hook-form"
+
+type FormProps = {
+    name: string
+    email: string
+    passwod: string
+    passwordConfirm: string
+}
 
 export default function SignUp() {
 
-    function handleUserCreation() {
-        console.log("Usuário criado com sucesso.")
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormProps>({
+        defaultValues: {
+            name: "",
+            email: "",
+            passwod: "",
+            passwordConfirm: "",
+        }
+    })
+
+    function handleUserCreation({ name, email, passwod, passwordConfirm }: FormProps) {
+        console.log({ name, email, passwod, passwordConfirm })
     }
 
     function handleGoBack() {
@@ -44,17 +65,43 @@ export default function SignUp() {
                             Crie sua conta
                         </Heading>
 
-                        <Input placeholder="Nome" />
+                        <Controller
+                            name="name"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="Nome" onChangeText={onChange} value={value} />
+                            )}
+                        />
 
-                        <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
+                        <Controller
+                            name="email"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" value={value} onChangeText={onChange} />
+                            )}
+                        />
 
-                        <Input placeholder="Senha" secureTextEntry />
+                        <Controller
+                            name="passwod"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="Senha" value={value} onChangeText={onChange} secureTextEntry />
+                            )}
+                        />
 
-                        <Button title="Criar e acessar" action="primary" variant="solid" onPress={handleUserCreation} />
+                        <Controller
+                            name="passwordConfirm"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="Confirme senha" onChangeText={onChange} value={value} onSubmitEditing={handleSubmit(handleUserCreation)} secureTextEntry />
+                            )}
+                        />
+
+                        <Button title="Criar e acessar" action="primary" variant="solid" onPress={handleSubmit(handleUserCreation)} />
 
                     </Center>
 
-                    <Button title="Voltar para o login" action="secondary" variant="outline" className="mt-12" onPress={handleGoBack} />
+                    <Button title="Voltar para o login" action="secondary" variant="outline" onPress={handleGoBack} />
 
                 </VStack>
             </VStack >
