@@ -10,14 +10,18 @@ import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
 import { router } from "expo-router";
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup";
 
-type FormProps = {
-    name: string
-    email: string
-    passwod: string
-    passwordConfirm: string
-}
+const signUpSchema = yup.object({
+    name: yup.string().required("Informe o nome"),
+    email: yup.string().required("Informe o e-mail").email("E-mail inválido"), //ele deve criar o pattern, similar ao que foi feito ali abaixo e quando preenchermos o cambo email ele tenta aplicar o patter e rejeita caso não der match com a string testada.
+    password: yup.string().required("Informe a senha").min(6, "A senha deve conter pelo menos 6 dígitos"),
+    passwordConfirm: yup.string().required("Informe a confirmação da senha").oneOf([yup.ref("password"), ""], "A confirmação da senha não confere."),
+})
+
+type FormProps = yup.InferType<typeof signUpSchema>;
 
 export default function SignUp() {
 
@@ -26,16 +30,17 @@ export default function SignUp() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormProps>({
+        resolver: yupResolver(signUpSchema),
         defaultValues: {
             name: "",
             email: "",
-            passwod: "",
+            password: "",
             passwordConfirm: "",
         }
     })
 
-    function handleUserCreation({ name, email, passwod, passwordConfirm }: FormProps) {
-        console.log({ name, email, passwod, passwordConfirm })
+    function handleUserCreation({ name, email, password, passwordConfirm }: FormProps) {
+        console.log({ name, email, password, passwordConfirm })
     }
 
     function handleGoBack() {
@@ -68,9 +73,10 @@ export default function SignUp() {
                         <Controller
                             name="name"
                             control={control}
-                            rules={{
-                                required: "Informe o nome."
-                            }}
+                            // Essa validação não é mais necessária, pois o proprio yup a fará
+                            // rules={{
+                            //     required: "Informe o nome."
+                            // }}
                             render={({ field: { value, onChange } }) => (
                                 <Input placeholder="Nome" onChangeText={onChange} value={value} errorMessage={errors.name?.message} />
                             )}
@@ -79,23 +85,24 @@ export default function SignUp() {
                         <Controller
                             name="email"
                             control={control}
-                            rules={{
-                                required: "Informe o e-mail",
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: "E-mail inválido"
-                                }
-                            }}
+                            // Essa validação não é mais necessária, pois o proprio yup a fará
+                            // rules={{
+                            //     required: "Informe o e-mail",
+                            //     pattern: {
+                            //         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            //         message: "E-mail inválido"
+                            //     }
+                            // }}
                             render={({ field: { value, onChange } }) => (
                                 <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" value={value} onChangeText={onChange} errorMessage={errors.email?.message} />
                             )}
                         />
 
                         <Controller
-                            name="passwod"
+                            name="password"
                             control={control}
                             render={({ field: { value, onChange } }) => (
-                                <Input placeholder="Senha" value={value} onChangeText={onChange} secureTextEntry />
+                                <Input placeholder="Senha" value={value} onChangeText={onChange} errorMessage={errors.password?.message} eyeIcon />
                             )}
                         />
 
@@ -103,7 +110,7 @@ export default function SignUp() {
                             name="passwordConfirm"
                             control={control}
                             render={({ field: { value, onChange } }) => (
-                                <Input placeholder="Confirme senha" onChangeText={onChange} value={value} onSubmitEditing={handleSubmit(handleUserCreation)} secureTextEntry />
+                                <Input placeholder="Confirme senha" onChangeText={onChange} value={value} onSubmitEditing={handleSubmit(handleUserCreation)} errorMessage={errors.passwordConfirm?.message} eyeIcon />
                             )}
                         />
 
