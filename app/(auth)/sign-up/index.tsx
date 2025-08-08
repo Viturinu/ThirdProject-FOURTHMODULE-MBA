@@ -13,6 +13,8 @@ import { router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup";
+import { api } from "@/services/api";
+import axios from "axios";
 
 const signUpSchema = yup.object({
     name: yup.string().required("Informe o nome"),
@@ -39,8 +41,28 @@ export default function SignUp() {
         }
     })
 
-    function handleUserCreation({ name, email, password, passwordConfirm }: FormProps) {
-        console.log({ name, email, password, passwordConfirm })
+    async function handleSignUp({ name, email, password, passwordConfirm }: FormProps) {
+        try {
+            const response = await api.post("/users", { name, email, password }); //axios já faz o 'response.json()' por padrão
+            console.log(response);
+        } catch (error) {
+            if (axios.isAxiosError(error)) { //função do Axios para saber se o error é do Axios
+                console.log(error.response?.data) //esse error que é disparado contém também o que, de fato, a api retornou, como mensagem, code, etc.
+            }
+            console.log(error);
+        }
+        // const response = await fetch("http://10.0.0.117:3333/users", {
+        //     method: "POST",
+        //     headers: {
+        //         "Accept": "application/json",
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         name, email, password
+        //     })
+        // });
+
+        // const data = await response.json();
     }
 
     function handleGoBack() {
@@ -110,11 +132,11 @@ export default function SignUp() {
                             name="passwordConfirm"
                             control={control}
                             render={({ field: { value, onChange } }) => (
-                                <Input placeholder="Confirme senha" onChangeText={onChange} value={value} onSubmitEditing={handleSubmit(handleUserCreation)} errorMessage={errors.passwordConfirm?.message} eyeIcon />
+                                <Input placeholder="Confirme senha" onChangeText={onChange} value={value} onSubmitEditing={handleSubmit(handleSignUp)} errorMessage={errors.passwordConfirm?.message} eyeIcon />
                             )}
                         />
 
-                        <Button title="Criar e acessar" action="primary" variant="solid" onPress={handleSubmit(handleUserCreation)} />
+                        <Button title="Criar e acessar" action="primary" variant="solid" onPress={handleSubmit(handleSignUp)} />
 
                     </Center>
 
