@@ -9,12 +9,15 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup";
 import { api } from "@/services/api";
 import axios from "axios";
+import { useToast } from "@/components/ui/toast";
+import { AppError } from "@/util/AppError";
+import { ToastMessage } from "@/components/mine/ToastMessage";
 
 const signUpSchema = yup.object({
     name: yup.string().required("Informe o nome"),
@@ -26,6 +29,8 @@ const signUpSchema = yup.object({
 type FormProps = yup.InferType<typeof signUpSchema>;
 
 export default function SignUp() {
+
+    const toast = useToast();
 
     const {
         control,
@@ -44,12 +49,26 @@ export default function SignUp() {
     async function handleSignUp({ name, email, password, passwordConfirm }: FormProps) {
         try {
             const response = await api.post("/users", { name, email, password }); //axios já faz o 'response.json()' por padrão
-            console.log(response);
+            toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                    <ToastMessage id={id} action="success" title="Usuário criado com sucesso." onClose={() => toast.close(id)} />
+                )
+            });
         } catch (error) {
-            if (axios.isAxiosError(error)) { //função do Axios para saber se o error é do Axios
-                console.log(error.response?.data) //esse error que é disparado contém também o que, de fato, a api retornou, como mensagem, code, etc.
-            }
-            console.log(error);
+            const isAppError = error instanceof AppError; //verifica se o erro disparado foi aquele tratado pelo interceptor que nós programamos
+            const title = isAppError ? error.message : "Não foi possível criar a conta. Tente novamente mais tarde." //verifica que foi erro que fizemos ou não, e aí atribui a mensagem que programamos no backend ou uma genérica aqui
+
+            toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                    <ToastMessage id={id} action="error" title={title} onClose={() => toast.close(id)} />
+                )
+            })
+            // if (axios.isAxiosError(error)) { //função do Axios para saber se o error é do Axios
+            //     console.log(error.response?.data) //esse error que é disparado contém também o que, de fato, a api retornou, como mensagem, code, etc.
+            // }
+            // console.log(error);
         }
         // const response = await fetch("http://10.0.0.117:3333/users", {
         //     method: "POST",

@@ -41,7 +41,7 @@ export default function Profile() {
                 };
 
                 if (photoInfo.size && (photoInfo.size / 1024 / 1024 > 0.1)) { //verifica tamanho da imagem e retorna se exceder.
-                    return toast.show({
+                    return toast.show({ //quando a gente chama a função toast, aparentemente ele gera uma id que usamos para passar pro nosso componente personalizado (ToastMessage)(passamos ele na propriedade id apenas para constar, mas não tem função aparante na função de toast.close(id), pois ele quem vai fechar o toast quando clicarmos no 'x' customizado que criamos)
                         placement: "top",
                         render: ({ id }) => (
                             <ToastMessage id={id} action="error" title="Essa imagem é muito grande. Escolha uma de até 5MB." onClose={() => toast.close(id)} />

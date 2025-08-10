@@ -3,6 +3,7 @@ import { Pressable } from "../ui/pressable";
 import { Icon } from "../ui/icon";
 import { X } from "lucide-react-native";
 import clsx from "clsx";
+import { HStack } from "../ui/hstack";
 import { VStack } from "../ui/vstack";
 
 type Props = {
@@ -17,8 +18,8 @@ export function ToastMessage({ id, title, description, action, onClose }: Props)
     return (
         <Toast nativeID={`toast-${id}`} action={action} className={clsx(action === "success" ? "bg-green-500" : "bg-red-500", "mt-10")}>
             <VStack space="xs" className="w-full">
-                <Pressable className="self-end" onPress={onClose}>
-                    <Icon as={X} className="text-gray-50 text-md" />
+                <Pressable onPress={onClose}>
+                    <Icon as={X} className="text-gray-50 text-md self-end" />
                 </Pressable>
                 <ToastTitle className="text-white font-heading">
                     {title}
