@@ -8,11 +8,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/components/useColorScheme";
-import { Slot } from "expo-router";
+import { Slot, useRouter } from "expo-router";
 import { Roboto_700Bold, Roboto_400Regular } from "@expo-google-fonts/roboto"
-import "../global.css";
 import { Box } from "@/components/ui/box";
 import { StatusBar } from "@/components/ui/status-bar";
+import "../global.css";
+import { AuthContext, AuthContextProvider } from "@/context/AuthContext";
+import { Avatar } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,10 +58,22 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme(); //resgata o estilo de cor preferido do usuário de acordo com o sistema operacional
   const theme = DefaultTheme;
-  theme.colors.background = "#121214";
+  theme.colors.background = "#121214"; //é o tema do react navigation native que determina a cor do fundo na navegação, pois assim conseguiremos parar de ter aqueles glictches brancos que aparecem ao passar de uma screen para a outra
 
+  const context = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (Object.keys(context.user === undefined || context.user).length === 0) {
+      console.log("undefined ou igual a zero: " + context.user)
+      router.push("/sign-in"); //se tiver user no contexto, ele já fez login e deve ser encaminhado para tela de home
+    } else {
+      console.log("maior que 1: " + context.user)
+      router.push("/home"); //se tiver user no contexto, ele já fez login e deve ser encaminhado para tela de home
+    }
+  }, [context])
   return (
     <Box className="flex-1 bg-black">
       <StatusBar
@@ -68,10 +83,11 @@ function RootLayoutNav() {
       />
       <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-          <Slot />
+          <AuthContextProvider>
+            <Slot />
+          </AuthContextProvider>
         </ThemeProvider>
       </GluestackUIProvider>
-
     </Box>
   );
 }

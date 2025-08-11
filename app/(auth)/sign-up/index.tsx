@@ -9,12 +9,11 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup";
 import { api } from "@/services/api";
-import axios from "axios";
 import { useToast } from "@/components/ui/toast";
 import { AppError } from "@/util/AppError";
 import { ToastMessage } from "@/components/mine/ToastMessage";

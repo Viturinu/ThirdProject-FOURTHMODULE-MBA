@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VStack } from "@/components/ui/vstack";
 import BackgroundImg from "@assets/images/background.png" //precisamos fazer o type definition <---> png.d.ts
 import { Image } from "@/components/ui/image";
@@ -9,15 +9,20 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/mine/Input";
 import { Button } from "@/components/mine/Button";
 import { ScrollView } from "react-native";
-
 import { useRouter } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
 
-    const navigation = useRouter();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+
+    const router = useRouter();
+
+    const { handleSignIn } = useAuth();
 
     function handleNavigateToSignUp() {
-        navigation.navigate("/sign-up")
+        router.navigate("/sign-up")
     }
 
     return (
@@ -43,10 +48,10 @@ export default function Home() {
                             Acesse a conta
                         </Heading>
 
-                        <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
-                        <Input placeholder="Senha" secureTextEntry />
+                        <Input placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+                        <Input placeholder="Senha" value={password} onChangeText={setPassword} secureTextEntry />
 
-                        <Button title="Acessar" action="primary" variant="solid" />
+                        <Button title="Acessar" action="primary" variant="solid" onPress={() => handleSignIn(email, password)} />
 
                     </Center>
 
