@@ -62,18 +62,6 @@ function RootLayoutNav() {
   const theme = DefaultTheme;
   theme.colors.background = "#121214"; //é o tema do react navigation native que determina a cor do fundo na navegação, pois assim conseguiremos parar de ter aqueles glictches brancos que aparecem ao passar de uma screen para a outra
 
-  const context = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (Object.keys(context.user === undefined || context.user).length === 0) {
-      console.log("undefined ou igual a zero: " + context.user)
-      router.push("/sign-in"); //se tiver user no contexto, ele já fez login e deve ser encaminhado para tela de home
-    } else {
-      console.log("maior que 1: " + context.user)
-      router.push("/home"); //se tiver user no contexto, ele já fez login e deve ser encaminhado para tela de home
-    }
-  }, [context])
   return (
     <Box className="flex-1 bg-black">
       <StatusBar

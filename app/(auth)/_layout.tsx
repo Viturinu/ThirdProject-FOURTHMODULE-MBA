@@ -1,7 +1,8 @@
-import { Stack } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
+import { Stack, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 export default function AuthLayout() {
-    //aqui vamos fazer a verificação se ele tem seção já ou não
     return (
         <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="sign-in/index" options={{ title: "Sign in" }} />
