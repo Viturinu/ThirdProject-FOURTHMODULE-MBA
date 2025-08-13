@@ -1,12 +1,13 @@
 import { UserDTO } from "@/dtos/UserDTO";
 import { api } from "@/services/api";
-import { storageUserGet, storageUserSave } from "@/storage/storageUser";
+import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { useRouter } from "expo-router";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 export type AuthContextDataProps = { //tipando para colocarmos como modelo do nossoc contexto
     user: UserDTO; //UserDTO é um tipo genṕerico de user, pois usaremos em toda nossa aplicação.
     SignIn: (email: string, password: string) => Promise<void>;
+    SignOut: () => Promise<void>;
     isLoadingUserStorageData: boolean; //no momento da criação do contexto, quye é no inicio do app, ele já vai ficar em false pra carregar o loading enquanto o user ṕe carregado do storage
 }
 
@@ -61,6 +62,18 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
         }
     }
 
+    async function SignOut() {
+        try {
+            setIsLoadingUserStorageData(true);
+            setUser({} as UserDTO);
+            await storageUserRemove();
+        } catch (error) {
+            throw error;
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
+
     useEffect(() => {
         Object.keys(user).length === 0 ? router.push("/sign-in") : router.push("/home") //foi preciso fazer isso, pois se chamar <Home> diretamente, ele vai dar problema com o carregamento do Layout, pois ele só carrega se for feito via rota do expo-router, não diretamente como estava sendo feito;
     }, [user])
@@ -70,7 +83,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, SignIn, isLoadingUserStorageData }}>
+        <AuthContext.Provider value={{ user, SignIn, SignOut, isLoadingUserStorageData }}>
             {children}
         </AuthContext.Provider>
     )

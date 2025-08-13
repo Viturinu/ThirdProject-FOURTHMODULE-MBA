@@ -3,7 +3,6 @@ import { Pressable } from "../ui/pressable";
 import { Icon } from "../ui/icon";
 import { X } from "lucide-react-native";
 import clsx from "clsx";
-import { HStack } from "../ui/hstack";
 import { VStack } from "../ui/vstack";
 
 type Props = {

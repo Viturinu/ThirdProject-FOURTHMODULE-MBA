@@ -2,7 +2,7 @@ import { AppError } from "@/util/AppError";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://10.0.0.117:3333"
+    baseURL: "http://192.168.1.10:3333"
 });
 
 api.interceptors.response.use(response => response, error => { //na resposta normal (=== 200+ - 299) ele retorna ela mesmo, no erro (!== 200+ - 299) ele faz a condicional
