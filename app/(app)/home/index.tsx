@@ -5,9 +5,13 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { useRouter } from "expo-router"; //antigamente era useNavigation do react-navigation/native
+import { AppError } from "@/util/AppError";
+import { useToast } from "@/components/ui/toast";
+import { ToastMessage } from "@/components/mine/ToastMessage";
+import { api } from "@/services/api";
 
 export type RouteProps = {
     name: string
@@ -18,10 +22,29 @@ export type RouteProps = {
 export default function Home() {
 
     const [exercises, setExercises] = useState(["Puxada frontal", "Puxada curvada", "Puxada unilateral", "Levantamento terra",]);
-    const [groups, setGroups] = useState(["Costas", "Bíceps", "Tríceps", "Ombro"]);
+    const [groups, setGroups] = useState<string[]>([]);
     const [groupSelected, setGroupSelected] = useState("Costas");
 
+    const toast = useToast();
     const router = useRouter(); //antigamente seria o const navigation = useNavigation<AppNavigatorRoutesProps>(), assim ele já reconheceria as rotas que já estariam previamente tipadas
+
+    async function fetchGroups() {
+        try {
+            const response = await api.get("/groups");
+            setGroups(response.data);
+
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possível carregar os grupos musculares."
+
+            toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                    <ToastMessage id={id} action="error" title="Essa imagem é muito grande. Escolha uma de até 5MB." onClose={() => toast.close(id)} />
+                )
+            })
+        }
+    }
 
     function handleOpenExerciseDetails() {
         router.navigate({
@@ -34,7 +57,9 @@ export default function Home() {
         })
     }
 
-
+    useEffect(() => {
+        fetchGroups();
+    })
     return (
         <VStack className="flex-1">
             <HomeHeader />

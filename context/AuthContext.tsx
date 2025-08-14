@@ -1,6 +1,6 @@
 import { UserDTO } from "@/dtos/UserDTO";
 import { api } from "@/services/api";
-import { storageAuthTokenGet, storageAuthTokenSave } from "@/storage/storageAuthToken";
+import { storageAuthTokenGet, storageAuthTokenRemove, storageAuthTokenSave } from "@/storage/storageAuthToken";
 import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { useRouter } from "expo-router";
 import { createContext, ReactNode, useEffect, useState } from "react";
@@ -31,13 +31,26 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
 
     const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true);
 
-    async function storageUserAndToken(user: UserDTO, token: string) {
+    async function UserAndTokenUpdate(user: UserDTO, token: string) {
         try {
             setIsLoadingUserStorageData(true)
-            await storageUserSave(user); //aqui ele salva no async storage
-            await storageAuthTokenSave(token); //armazenando no asyncstorage o token
 
             api.defaults.headers.common["Authorization"] = `Bearer ${token}`; //anexa o token na requisição http, mesma coisa que fazemos no React puro ou Next
+
+            setUser(user); //definindo o user no contexto, pois aqui vai refletir pra todos
+        } catch (error) {
+            throw error; //esta jogando pro handleSignIn() tratar o erro
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
+
+    async function UserAndTokenSaveToStorage(user: UserDTO, token: string) {
+        try {
+            setIsLoadingUserStorageData(true);
+
+            await storageUserSave(user); //aqui ele salva no async storage
+            await storageAuthTokenSave(token); //armazenando no asyncstorage o token
         } catch (error) {
             throw error;
         } finally {
@@ -46,7 +59,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
     }
 
     async function SignIn(email: string, password: string) {
+        setIsLoadingUserStorageData(true);
+
         try { //sempre que trabalha com requisições é uma boa pratica envolver com try/catch pra buscar exceções 
+
             const { data } = await api.post("/sessions", { email, password }); //essa requisição 'post' é assincrona, por isso o async ali em cima
             // setUser({
             //     id: user.id,
@@ -55,22 +71,25 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
             //     email: user.email
             // })
             if (Object.keys(data.user).length !== 0) {
-                setUser(data.user); //define usuario no contexto
-                storageUserAndToken(data.user, data.token) //define user e token no async storage - aqui vai armazenar tanto o user quanto o token no nosso async storage (em diferentes caminhos, pois user é no ignitegym:user e ignitegym:token)
+                await UserAndTokenSaveToStorage(data.user, data.token); //salva token e user no storage
+                UserAndTokenUpdate(data.user, data.token); //atualiza o objeto user no contexto e token no sessão
             }
             console.log(user);
         } catch (error) {
             throw error;
+        } finally {
+            setIsLoadingUserStorageData(false);
         }
     }
 
     async function loadUserData() {
         try {
+            setIsLoadingUserStorageData(true);
             const userLogged = await storageUserGet(); //busca se tem usuário já logado
             const token = await storageAuthTokenGet(); //busca o token também do async storage
 
             if (Object.keys(userLogged).length > 0 && token) { //if(useLogged) vai sempre retornar true, pois só seria false se userLogged fosse null, undefined, 0, "" ou false — mas isso não acontece na sua função. //aqui está assim porque o userLogged vai retornar um objeto, seja preenchido ou não, mas o token posso verificar assim porque ele vai tentar buscar algo de lá, e se não achar pode retornar algo undefined
-                setUser(userLogged); //seta o user carregado da memoria do storage
+                UserAndTokenUpdate(userLogged, token); //atualiza sessão (cabeçalho) e user no contexto
             }
         } catch (error) {
             throw error;
@@ -84,6 +103,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
             setIsLoadingUserStorageData(true); //esse status serve para atualizarmos com tela de loading na screen vigente
             setUser({} as UserDTO); //limpa o user da 'sessão'/async storage
             await storageUserRemove();
+            await storageAuthTokenRemove();
         } catch (error) {
             throw error;
         } finally {
@@ -97,7 +117,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
 
     useEffect(() => {
         loadUserData();
-    }, [])
+    }, []) //se não colocassemos esse segundo parametro, deixando apenas a função no primeiro parametro do useEffect, ele executaria em QUALQUER RENDERIZAÇÃO, mas se colocarmos os colchetes sem nada ele vai renderizar apenas na primeira montagem do componente, independente de re-renderização
 
     return (
         <AuthContext.Provider value={{ user, SignIn, SignOut, isLoadingUserStorageData }}>
