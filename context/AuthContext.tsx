@@ -1,5 +1,6 @@
 import { UserDTO } from "@/dtos/UserDTO";
 import { api } from "@/services/api";
+import { storageAuthTokenGet, storageAuthTokenSave } from "@/storage/storageAuthToken";
 import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { useRouter } from "expo-router";
 import { createContext, ReactNode, useEffect, useState } from "react";
@@ -27,20 +28,35 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
         // email: "victor.almeida.ti@gmail.com",
         // avatar: "victor.png"
     } as UserDTO);
+
     const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true);
+
+    async function storageUserAndToken(user: UserDTO, token: string) {
+        try {
+            setIsLoadingUserStorageData(true)
+            await storageUserSave(user); //aqui ele salva no async storage
+            await storageAuthTokenSave(token); //armazenando no asyncstorage o token
+
+            api.defaults.headers.common["Authorization"] = `Bearer ${token}`; //anexa o token na requisição http, mesma coisa que fazemos no React puro ou Next
+        } catch (error) {
+            throw error;
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
 
     async function SignIn(email: string, password: string) {
         try { //sempre que trabalha com requisições é uma boa pratica envolver com try/catch pra buscar exceções 
-            const { data: { user } } = await api.post("/sessions", { email, password }); //essa requisição 'post' é assincrona, por isso o async ali em cima
+            const { data } = await api.post("/sessions", { email, password }); //essa requisição 'post' é assincrona, por isso o async ali em cima
             // setUser({
             //     id: user.id,
             //     name: user.name,
             //     avatar: user.avatar === null ? "" : user.avatar,
             //     email: user.email
             // })
-            if (Object.keys(user).length !== 0) {
-                setUser(user);
-                storageUserSave(user);
+            if (Object.keys(data.user).length !== 0) {
+                setUser(data.user); //define usuario no contexto
+                storageUserAndToken(data.user, data.token) //define user e token no async storage - aqui vai armazenar tanto o user quanto o token no nosso async storage (em diferentes caminhos, pois user é no ignitegym:user e ignitegym:token)
             }
             console.log(user);
         } catch (error) {
@@ -51,8 +67,9 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
     async function loadUserData() {
         try {
             const userLogged = await storageUserGet(); //busca se tem usuário já logado
+            const token = await storageAuthTokenGet(); //busca o token também do async storage
 
-            if (Object.keys(userLogged).length > 0) { //if(useLogged) vai sempre retornar true, pois só seria false se userLogged fosse null, undefined, 0, "" ou false — mas isso não acontece na sua função.
+            if (Object.keys(userLogged).length > 0 && token) { //if(useLogged) vai sempre retornar true, pois só seria false se userLogged fosse null, undefined, 0, "" ou false — mas isso não acontece na sua função. //aqui está assim porque o userLogged vai retornar um objeto, seja preenchido ou não, mas o token posso verificar assim porque ele vai tentar buscar algo de lá, e se não achar pode retornar algo undefined
                 setUser(userLogged); //seta o user carregado da memoria do storage
             }
         } catch (error) {
@@ -64,8 +81,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
 
     async function SignOut() {
         try {
-            setIsLoadingUserStorageData(true);
-            setUser({} as UserDTO);
+            setIsLoadingUserStorageData(true); //esse status serve para atualizarmos com tela de loading na screen vigente
+            setUser({} as UserDTO); //limpa o user da 'sessão'/async storage
             await storageUserRemove();
         } catch (error) {
             throw error;
