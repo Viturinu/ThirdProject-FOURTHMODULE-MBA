@@ -5,25 +5,28 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList } from "react-native";
-import { useRouter } from "expo-router"; //antigamente era useNavigation do react-navigation/native
+import { useFocusEffect, useRouter } from "expo-router"; //antigamente era useNavigation do react-navigation/native
 import { AppError } from "@/util/AppError";
 import { useToast } from "@/components/ui/toast";
 import { ToastMessage } from "@/components/mine/ToastMessage";
 import { api } from "@/services/api";
+import { ExerciseDTO } from "@/dtos/ExerciseDTO";
+import { Loading } from "@/components/mine/Loading";
 
 export type RouteProps = {
-    name: string
-    muscleCategory: string
     id: string
+    // name: string
+    // muscleCategory: string //Não preciso mais disso, pois vamos resgatar da API via id que está sendo passado
 }
 
 export default function Home() {
 
-    const [exercises, setExercises] = useState(["Puxada frontal", "Puxada curvada", "Puxada unilateral", "Levantamento terra",]);
+    const [exercises, setExercises] = useState<ExerciseDTO[]>([] as ExerciseDTO[]);
     const [groups, setGroups] = useState<string[]>([]);
-    const [groupSelected, setGroupSelected] = useState("Costas");
+    const [groupSelected, setGroupSelected] = useState<string>();
+    const [isLoading, setIsLoading] = useState(true);
 
     const toast = useToast();
     const router = useRouter(); //antigamente seria o const navigation = useNavigation<AppNavigatorRoutesProps>(), assim ele já reconheceria as rotas que já estariam previamente tipadas
@@ -46,13 +49,31 @@ export default function Home() {
         }
     }
 
-    function handleOpenExerciseDetails() {
+    async function fetchExercisesByGroup() {
+        try {
+            setIsLoading(true);
+            const response = await api.get(`/exercises/bygroup/${groupSelected}`);
+            setExercises(response.data);
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possível carregar os exercícios."
+
+            toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                    <ToastMessage id={id} action="error" title={title} onClose={() => toast.close(id)} />
+                )
+            })
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    function handleOpenExerciseDetails(id: string) {
         router.navigate({
-            pathname: "/(app)/exercise",
+            pathname: "/exercise",
             params: {
-                id: 5,
-                name: "Puxada frontal",
-                muscleCategory: "Costas"
+                id,
             }
         })
     }
@@ -60,6 +81,11 @@ export default function Home() {
     useEffect(() => {
         fetchGroups();
     })
+
+    useFocusEffect(useCallback(() => {
+        fetchExercisesByGroup();
+    }, [groupSelected])) //toda vez que groupSelected muda, ele dispara a função ou quando a gente volta pra tela
+
     return (
         <VStack className="flex-1">
             <HomeHeader />
@@ -82,26 +108,39 @@ export default function Home() {
                 style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
             />
 
-            <VStack className="px-8 flex-1">
-                <HStack className="justify-between items-center">
-                    <Heading className="text-gray-200 text-md font-heading"> Exercícios</Heading>
-                    <Text className="text-gray-200 text-sm font-body">
-                        {exercises.length}
-                    </Text>
-                </HStack>
-                <FlatList
-                    className="mt-6"
-                    keyExtractor={item => item}
-                    data={exercises}
-                    renderItem={() => {
-                        return <ExerciseCard onPress={handleOpenExerciseDetails} />
-                    }}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 20
-                    }}
-                />
-            </VStack>
+            {
+                isLoading ? <Loading />
+                    : <VStack className="px-8 flex-1">
+                        <HStack className="justify-between items-center">
+                            <Heading className="text-gray-200 text-md font-heading"> Exercícios</Heading>
+                            <Text className="text-gray-200 text-sm font-body">
+                                {exercises?.length}
+                            </Text>
+                        </HStack>
+                        <FlatList
+                            data={exercises}
+                            keyExtractor={item => item.id}
+                            className="mt-6"
+                            renderItem={({ item }) => {
+                                return <ExerciseCard data={item} onPress={() => handleOpenExerciseDetails(item.id)} />
+                            }}
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={Object.keys(exercises).length == 0 ? {
+                                flex: 1,
+                                justifyContent: "center",
+                                alignContent: "center",
+                                alignSelf: "center"
+                            } : {
+                                paddingBottom: 20
+                            }}
+                            ListEmptyComponent={() => {
+                                return (
+                                    <Text>Gentileza, selecionar um grupo muscular.</Text>
+                                )
+                            }}
+                        />
+                    </VStack>
+            }
         </VStack>
     )
 }
