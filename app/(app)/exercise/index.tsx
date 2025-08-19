@@ -16,15 +16,16 @@ import { AppError } from "@/util/AppError";
 import { useToast } from "@/components/ui/toast";
 import { ToastMessage } from "@/components/mine/ToastMessage";
 import { api } from "@/services/api";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ExerciseDTO } from "@/dtos/ExerciseDTO";
 import { Box } from "@/components/ui/box";
 import { Loading } from "@/components/mine/Loading";
 
 export default function Exercise() {
 
-    const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO);
+    const [sendingRegister, setSendingRegister] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO);
 
     const router = useRouter(); //antigamente seria o const navigation = useNavigation<AppNavigatorRoutesProps>(), assim ele já reconheceria as rotas que já estariam previamente tipadas
     const toast = useToast();
@@ -55,9 +56,35 @@ export default function Exercise() {
         }
     }
 
+    async function handleExerciseHistoryRegister() {
+        try {
+            setSendingRegister(true)
+            api.post("/history", { exercise_id: id })
+            toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                    <ToastMessage id={id} action="success" title="Parabéns pela realização de mais um exercício." onClose={() => toast.close(id)} />
+                )
+            })
+
+            router.push("/history")
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possível carregar os detalhes do exercício."
+
+            toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                    <ToastMessage id={id} action="error" title={title} onClose={() => toast.close(id)} />
+                )
+            })
+        } finally {
+            setSendingRegister(false);
+        }
+    }
     useEffect(() => {
         fetchExerciseDetails();
-    }, [exercise])
+    }, [])
 
     return (
         <VStack className="flex-1">
@@ -107,7 +134,11 @@ export default function Exercise() {
                                     <Text className="text-gray-200 ml-2">{exercise.repetitions} repetições</Text>
                                 </HStack>
                             </HStack>
-                            <Button title="Marcar como realizado" />
+                            <Button
+                                title="Marcar como realizado"
+                                isLoading={sendingRegister}
+                                onPress={handleExerciseHistoryRegister}
+                            />
 
                         </VStack>
                     </ScrollView>
