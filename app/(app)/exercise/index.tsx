@@ -59,7 +59,7 @@ export default function Exercise() {
     async function handleExerciseHistoryRegister() {
         try {
             setSendingRegister(true)
-            api.post("/history", { exercise_id: id })
+            await api.post("/history", { exercise_id: id })
             toast.show({
                 placement: "top",
                 render: ({ id }) => (
