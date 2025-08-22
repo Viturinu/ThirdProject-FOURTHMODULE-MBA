@@ -6,7 +6,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, useWindowDimensions } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router"; //antigamente era useNavigation do react-navigation/native
 import { AppError } from "@/util/AppError";
 import { useToast } from "@/components/ui/toast";
@@ -22,6 +22,9 @@ export type RouteProps = {
 }
 
 export default function Home() {
+
+    const { width, height } = useWindowDimensions(); //ou podenmos usar o Dimension from RN, e fazer tudo manual     Dimensions.get('window').width > Dimensions.get('window').height... etc
+    const isLandscape = width > height;
 
     const [exercises, setExercises] = useState<ExerciseDTO[]>([] as ExerciseDTO[]);
     const [groups, setGroups] = useState<string[]>([]);
@@ -105,7 +108,8 @@ export default function Home() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ paddingHorizontal: 32 }}
-                style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
+                style={
+                    [{ maxHeight: 44, minHeight: 44 }, isLandscape ? { marginVertical: 15 } : { marginVertical: 40 }]}
             />
 
             {

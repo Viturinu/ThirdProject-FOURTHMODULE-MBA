@@ -8,20 +8,43 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
 import { ToastMessage } from "@/components/mine/ToastMessage";
 import { useToast } from "@/components/ui/toast";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, Resolver } from "react-hook-form";
 import { useAuth } from "@/hooks/useAuth";
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
+import * as yup from "yup";
 
-type FormDataProps = {
-    name: string;
-    email: string;
-    password: string;
-    old_password: string;
-    confirm_password: string;
-}
+// type FormDataProps = {
+//     name: string;
+//     email: string;
+//     password: string;
+//     old_password: string;
+//     confirm_password: string;
+// }
+
+const profileSchema = yup.object({
+    name: yup.string().required("Informe o nome."),
+    password: yup.string()
+        .required("Informe a senha.")
+        .min(6, "A senha deve ter mínimo de 6 dígitos.")
+        .nullable()
+        .transform((value) => (value ? value : null)),
+    confirm_password: yup
+        .string()
+        .required("Informe a confirmação de senha.")
+        .nullable()
+        .transform((value) => (value ? value : null))
+        .oneOf([yup.ref("password"), null], "A confirmação da senha não confere.")
+    // .when("password", {
+    //     is: true,
+    //     then: (schema) => schema.nullable().required("Informe a confirmação da senha.")
+    // })
+});
+
+type FormDataProps = yup.InferType<typeof profileSchema>
 
 export default function Profile() {
 
@@ -29,15 +52,15 @@ export default function Profile() {
 
     const { user } = useAuth();
 
-    const { control } = useForm<FormDataProps>({
+    const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         defaultValues: {
             name: user.name,
-            email: user.email,
-        }
+        },
+        resolver: yupResolver(profileSchema), // <- força coerção
+
     });
 
     const [userPhoto, setUserPhoto] = useState("https://github.com/viturinu.png");
-
 
     async function handleUserPhotoSelect() {
         try {
@@ -76,6 +99,10 @@ export default function Profile() {
         }
     }
 
+    async function handleProfileUpdate(data: FormDataProps) {
+        console.log(data)
+    }
+
     return (
         <VStack className="flex-1">
             <ScreenHeader title="Perfil" />
@@ -94,45 +121,35 @@ export default function Profile() {
                             control={control}
                             name="name"
                             render={({ field: { value, onChange } }) => (
-                                <Input placeholder="Nome" onChangeText={onChange} value={value} className="bg-gray-600" />
+                                <Input placeholder="Nome" onChangeText={onChange} value={value} errorMessage={errors.name?.message} autoCapitalize="words" className="text-gray-200 bg-gray-600" />
                             )}
                         />
 
-                        <Controller
-                            control={control}
-                            name="email"
-                            render={({ field: { value } }) => (
-                                <Input value={value} placeholder="E-mail" keyboardType="email-address" className="text-gray-200 bg-gray-600" isReadOnly />
-                            )}
-                        />
+                        <Input value={user.email} placeholder="E-mail" keyboardType="email-address" className="text-gray-200 bg-gray-600" isReadOnly />
+
                     </Center>
 
                     <Heading className="self-start font-heading text-gray-200 text-md mt-12 mb-2">Alterar senha</Heading>
 
                     <Center className=" w-full gap-4">
-                        <Controller
-                            control={control}
-                            name="old_password"
-                            render={({ field: { onChange } }) => (
-                                <Input placeholder="Senha antiga" onChangeText={onChange} className="bg-gray-600" secureTextEntry />
-                            )}
-                        />
+                        <Input placeholder="Senha antiga" className="text-gray-200 bg-gray-600" secureTextEntry />
+
                         <Controller
                             control={control}
                             name="password"
                             render={({ field: { onChange } }) => (
-                                <Input placeholder="Nova antiga" onChangeText={onChange} className="bg-gray-600" secureTextEntry />
+                                <Input placeholder="Nova antiga" onChangeText={onChange} errorMessage={errors.password?.message} className="text-gray-200 bg-gray-600" secureTextEntry />
                             )}
                         />
                         <Controller
                             control={control}
                             name="confirm_password"
                             render={({ field: { onChange } }) => (
-                                <Input placeholder="Confirme a nova senha" onChangeText={onChange} className="bg-gray-600" secureTextEntry />
+                                <Input placeholder="Confirme a nova senha" onChangeText={onChange} errorMessage={errors.confirm_password?.message} className="text-gray-200 bg-gray-600" secureTextEntry />
                             )}
                         />
 
-                        <Button title="Atualizar" />
+                        <Button title="Atualizar" onPress={handleSubmit(handleProfileUpdate)} />
                     </Center>
 
                 </Center>
