@@ -2,8 +2,13 @@ import { Tabs } from "expo-router";
 import HomeSvg from "@assets/images/home.svg";
 import HistorySvg from "@assets/images/history.svg";
 import ProfileSvg from "@assets/images/profile.svg";
+import { useWindowDimensions } from "react-native";
 
 export default function AuthLayout() {
+
+    const { width, height } = useWindowDimensions(); //ou podenmos usar o Dimension from RN, e fazer tudo manual     Dimensions.get('window').width > Dimensions.get('window').height... etc
+    const isLandscape = width > height;
+
     return (
         <Tabs screenOptions={{
             tabBarActiveTintColor: '#00B37E', //Lá embaixo, pelo meu entendimento, como estamos importando uma logo que vem por padrão com uma cor preta, podemos usar as cores tabBarActiveTintColor e tabBarInactiveTintColor pra tambem preencher essa logo dinamicamente, desestruturando ela
@@ -12,8 +17,8 @@ export default function AuthLayout() {
             tabBarStyle: {
                 backgroundColor: '#202024',
                 borderTopWidth: 0,
-                paddingBottom: 60,
-                paddingTop: 8,
+                paddingBottom: isLandscape ? 45 : 60,
+                paddingTop: isLandscape ? 20 : 8,
             }
         }}>
             <Tabs.Screen name="home/index" options={{ title: "Home", tabBarIcon: ({ color }) => <HomeSvg fill={color} /> }} />
