@@ -6,19 +6,38 @@ import { Center } from "@/components/ui/center";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { Alert, ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
 import { ToastMessage } from "@/components/mine/ToastMessage";
 import { useToast } from "@/components/ui/toast";
+import { useForm, Controller } from "react-hook-form";
+import { useAuth } from "@/hooks/useAuth";
 
+type FormDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    old_password: string;
+    confirm_password: string;
+}
 
 export default function Profile() {
 
     const toast = useToast();
 
+    const { user } = useAuth();
+
+    const { control } = useForm<FormDataProps>({
+        defaultValues: {
+            name: user.name,
+            email: user.email,
+        }
+    });
+
     const [userPhoto, setUserPhoto] = useState("https://github.com/viturinu.png");
+
 
     async function handleUserPhotoSelect() {
         try {
@@ -33,7 +52,7 @@ export default function Profile() {
                 return
             }
 
-            const photoURI = photoSelected.assets[0].uri; //posição 0 é um array com vários dados e metadados, entre esses dados tem a imagem;
+            const photoURI = photoSelected.assets[0].uri; //posição 0 é um array com vários dados e metadados, entre esses dados tem o uri e a imagem;
 
             if (photoURI) {
                 const photoInfo = await FileSystem.getInfoAsync(photoURI) as {
@@ -69,21 +88,53 @@ export default function Profile() {
                             <Text className="text-green-500 font-heading text-md mt-2 ">Alterar Foto</Text>
                         </View>
                     </TouchableOpacity>
-                    <Center className="w-full gap-4">
-                        <Input placeholder="Nome" className="bg-gray-600" />
 
-                        <Input value="victor.almeida.ti@gmail.com" keyboardType="email-address" className="text-gray-200 bg-gray-600" isReadOnly />
+                    <Center className="w-full gap-4">
+                        <Controller
+                            control={control}
+                            name="name"
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="Nome" onChangeText={onChange} value={value} className="bg-gray-600" />
+                            )}
+                        />
+
+                        <Controller
+                            control={control}
+                            name="email"
+                            render={({ field: { value } }) => (
+                                <Input value={value} placeholder="E-mail" keyboardType="email-address" className="text-gray-200 bg-gray-600" isReadOnly />
+                            )}
+                        />
                     </Center>
 
                     <Heading className="self-start font-heading text-gray-200 text-md mt-12 mb-2">Alterar senha</Heading>
 
                     <Center className=" w-full gap-4">
-                        <Input placeholder="Senha antiga" className="bg-gray-600" secureTextEntry />
-                        <Input placeholder="Nova antiga" className="bg-gray-600" secureTextEntry />
-                        <Input placeholder="Confirme a nova senha" className="bg-gray-600" secureTextEntry />
+                        <Controller
+                            control={control}
+                            name="old_password"
+                            render={({ field: { onChange } }) => (
+                                <Input placeholder="Senha antiga" onChangeText={onChange} className="bg-gray-600" secureTextEntry />
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="password"
+                            render={({ field: { onChange } }) => (
+                                <Input placeholder="Nova antiga" onChangeText={onChange} className="bg-gray-600" secureTextEntry />
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="confirm_password"
+                            render={({ field: { onChange } }) => (
+                                <Input placeholder="Confirme a nova senha" onChangeText={onChange} className="bg-gray-600" secureTextEntry />
+                            )}
+                        />
 
                         <Button title="Atualizar" />
                     </Center>
+
                 </Center>
             </ScrollView>
         </VStack>

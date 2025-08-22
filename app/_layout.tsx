@@ -8,14 +8,13 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/components/useColorScheme";
-import { Slot, useRouter } from "expo-router";
+import { Slot } from "expo-router";
 import { Roboto_700Bold, Roboto_400Regular } from "@expo-google-fonts/roboto"
 import { Box } from "@/components/ui/box";
 import { StatusBar } from "@/components/ui/status-bar";
 import "../global.css";
-import { AuthContext, AuthContextProvider } from "@/context/AuthContext";
-import { Avatar } from "@/components/ui/avatar";
-import { useAuth } from "@/hooks/useAuth";
+import { AuthContextProvider } from "@/context/AuthContext";
+
 
 export {
   // Catch any errors thrown by the Layout component.
