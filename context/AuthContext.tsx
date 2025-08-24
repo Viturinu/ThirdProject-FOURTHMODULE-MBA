@@ -9,6 +9,7 @@ export type AuthContextDataProps = { //tipando para colocarmos como modelo do no
     user: UserDTO; //UserDTO é um tipo genṕerico de user, pois usaremos em toda nossa aplicação.
     SignIn: (email: string, password: string) => Promise<void>;
     SignOut: () => Promise<void>;
+    updateUserProfile: (userUpdated: UserDTO) => Promise<void>;
     isLoadingUserStorageData: boolean; //no momento da criação do contexto, quye é no inicio do app, ele já vai ficar em false pra carregar o loading enquanto o user ṕe carregado do storage
 }
 
@@ -98,6 +99,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
         }
     }
 
+    async function updateUserProfile(userUpdated: UserDTO) {
+        try {
+            setUser(userUpdated);
+            await storageUserSave(userUpdated);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async function SignOut() {
         try {
             setIsLoadingUserStorageData(true); //esse status serve para atualizarmos com tela de loading na screen vigente
@@ -120,7 +130,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) { //
     }, []) //se não colocassemos esse segundo parametro, deixando apenas a função no primeiro parametro do useEffect, ele executaria em QUALQUER RENDERIZAÇÃO, mas se colocarmos os colchetes sem nada ele vai renderizar apenas na primeira montagem do componente, independente de re-renderização
 
     return (
-        <AuthContext.Provider value={{ user, SignIn, SignOut, isLoadingUserStorageData }}>
+        <AuthContext.Provider value={{ user, SignIn, SignOut, updateUserProfile, isLoadingUserStorageData }}>
             {children}
         </AuthContext.Provider>
     )
